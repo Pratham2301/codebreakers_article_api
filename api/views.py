@@ -94,9 +94,12 @@ def create_article(request):
         serializer = ArticleSerializer(data=request.data)
         if serializer.is_valid():
             
-            data = serializer.validated_data
-            print(data)
             serializer.save()
+            data = serializer.data
+            # print(data)
+            title=data['title']
+            author=data['author']
+            Authors_instance = Authors.objects.create(title=title,author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -107,7 +110,7 @@ def create_article(request):
 def update_article(request,pk):
     
     try:
-        article = Articles.objects.get(pk=pk)
+        article = Articles.objects.get(title=pk)
     except Articles.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -115,6 +118,11 @@ def update_article(request,pk):
         serializer = ArticleSerializer(article, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            data = serializer.data
+            # print(data)
+            title=data['title']
+            author=data['author']
+            Authors_instance = Authors.objects.create(title=title,author=author)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -126,7 +134,7 @@ def update_article(request,pk):
 def delete_article(request,pk):
     
     try:
-        article = Articles.objects.get(pk=pk)
+        article = Articles.objects.get(title=pk)
     except Articles.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
