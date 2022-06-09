@@ -109,12 +109,21 @@ def create_article(request):
 @api_view(['PUT'])
 def update_article(request,pk):
     
-    try:
-        article = Articles.objects.get(title=pk)
-    except Articles.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    # {
+    #     "title": "title-1",
+    #     "content": "content-1",
+    #     "author": "demo-author-1"
+    # }
     
-    if request.method == 'PUT':
+    if(request.method=='PUT'):
+
+        try:
+            article = Articles.objects.get(title=pk)
+        except Articles.DoesNotExist:
+            
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # print(article)
         serializer = ArticleSerializer(article, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -124,9 +133,8 @@ def update_article(request,pk):
             author=data['author']
             Authors_instance = Authors.objects.create(title=title,author=author)
             return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
 ###############################################################################
 
